@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+sqlalchemy
+alembic
+psycopg[binary]
+redis==8.1.0
+rq==2.12.0
+pydantic-settings==2.15.0
