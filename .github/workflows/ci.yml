@@ -30,6 +30,10 @@ jobs:
 
       - name: Validate backend imports
         working-directory: backend
+        env:
+            APP_SECRET: ci-test-secret
+            DATABASE_URL: postgresql+psycopg://ci:ci@localhost:5432/proofstack
+            REDIS_URL: redis://localhost:6379/0
         run: |
           python -c "from app.main import *"
           python -c "from app.core.config import settings"
