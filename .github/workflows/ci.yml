@@ -1,0 +1,79 @@
+name: ProofStack CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend:
+    name: Backend Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate backend imports
+        working-directory: backend
+        run: |
+          python -c "from app.main import *"
+          python -c "from app.core.config import settings"
+          python -c "from app.db.session import *"
+          python -c "from app.workers.queue import get_default_queue"
+
+      - name: Run backend tests
+        working-directory: backend
+        run: |
+          $tests = Get-ChidItem tests -Filter "test_*.py" -File -ErrorAction Silentlycontinue
+          if ($tests) {
+            python -m pytest tests
+          } else {
+            Write-Host "No backend tests configured yet."
+          }
+        shell: pwsh
+
+  frontend:
+    name: Frontend Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: TypeScript validation
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
