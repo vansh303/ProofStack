@@ -1,6 +1,8 @@
 from redis import Redis
 from rq import Worker
+
 from app.workers.connection import get_redis_connection
+
 
 def create_worker() -> Worker:
     redis_connection: Redis = get_redis_connection()
@@ -9,6 +11,7 @@ def create_worker() -> Worker:
         connection=redis_connection,
     )
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     worker = create_worker()
     worker.work()

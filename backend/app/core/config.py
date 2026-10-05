@@ -1,8 +1,10 @@
 from functools import lru_cache
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
 
 class Settings(BaseSettings):
     app_env: str = "development"
@@ -14,8 +16,8 @@ class Settings(BaseSettings):
     database_url: str
     redis_url: str
 
-    github_client_id: str=""
-    github_client_secret: str=""
+    github_client_id: str = ""
+    github_client_secret: str = ""
 
     google_client_id: str = ""
     google_client_secret: str = ""
@@ -29,8 +31,10 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return Settings()  # type: ignore[call-arg]
 
-settings = Settings()
+
+settings = get_settings()

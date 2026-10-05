@@ -1,5 +1,7 @@
 import os
+
 from redis import Redis
+
 
 def get_redis_connection() -> Redis:
     redis_url = os.getenv("REDIS_URL")

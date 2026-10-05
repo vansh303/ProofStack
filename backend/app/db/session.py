@@ -1,17 +1,20 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Engine, create_engine
+from sqlalchemy.orm import Session, sessionmaker
 
-def create_database_engine(database_url: str):
+
+def create_database_engine(database_url: str) -> Engine:
     return create_engine(
         database_url,
-        pool_pre_ping = True,
+        pool_pre_ping=True,
     )
 
-def create_session_factory(database_url: str):
-    engine = create_database_engine(database_url)
 
+def create_session_factory(
+    database_url: str,
+) -> sessionmaker[Session]:
+    engine = create_database_engine(database_url)
     return sessionmaker(
-        bind = engine,
-        autoflash = False,
+        bind=engine,
+        autoflush=False,
         autocommit=False,
     )
